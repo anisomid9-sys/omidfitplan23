@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FitPlan23</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&family=Lalezar&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F1F5FA;--row:#E2EAF4;--ink:#0A0A0A;--on-ink:#fff;--cell:#fff;--mute:#7b8797;--acc:#2563EB;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1218;--row:#1A212B;--ink:#F1F5FA;--on-ink:#0A0A0A;--cell:#26303D;--mute:#8d99aa;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1218;--row:#1A212B;--ink:#F1F5FA;--on-ink:#0A0A0A;--cell:#26303D;--mute:#8d99aa;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;max-width:640px;margin-inline:auto;padding:20px 16px 48px}
+.lock{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.logo{width:48px;height:48px;flex:none;border-radius:14px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font:900 15px Vazirmatn,Tahoma,sans-serif;direction:ltr}
+.lt{display:flex;flex-direction:column;direction:ltr;text-align:right;line-height:1.4}
+.lt b{font-size:17px}.lt span{font-size:12px;color:var(--mute)}
+input{font-family:inherit}
+.f{display:flex;gap:8px;margin-bottom:14px}
+.in{flex:1;min-width:0;border:0;border-radius:12px;background:var(--row);color:var(--ink);padding:12px 14px;font:600 14px Vazirmatn,Tahoma,sans-serif}
+.in.s{flex:none;width:96px;text-align:center}
+.in::placeholder{color:var(--mute);font-weight:400}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+.tab{flex:none;border:0;border-radius:14px;background:var(--row);color:var(--ink);font:600 14px Vazirmatn,Tahoma,sans-serif;padding:11px 16px;cursor:pointer}
+.tab.on{background:var(--ink);color:var(--on-ink)}
+.ti{width:100%;font:900 26px Vazirmatn,Tahoma,sans-serif;background:var(--row);color:var(--ink);border:0;border-radius:14px;padding:8px 14px;margin-bottom:12px}
+.ex{background:var(--row);border-radius:16px;border-inline-start:5px solid var(--acc);padding:12px 14px;margin-bottom:10px}
+.ni,.si,.ri{border:0;border-radius:9px;background:var(--cell);color:var(--ink);padding:9px;font:600 14px Vazirmatn,Tahoma,sans-serif}
+.ni{width:100%;margin-bottom:10px}
+.si{width:56px;text-align:center}.ri{width:96px;text-align:center}
+.ln{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lb{font-size:12px;color:var(--mute)}
+.mv{border:0;border-radius:8px;background:var(--cell);color:var(--ink);width:30px;height:32px;cursor:pointer;font-size:12px}
+.del{margin-inline-start:auto;border:0;background:transparent;color:var(--acc);font:600 13px Vazirmatn,Tahoma,sans-serif;cursor:pointer}
+.bt{border:0;border-radius:12px;padding:12px 16px;font:600 13px Vazirmatn,Tahoma,sans-serif;cursor:pointer;background:var(--acc);color:#fff}
+.bt.g{background:var(--ink);color:var(--on-ink)}
+.bt.l{background:var(--row);color:var(--ink)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.acts[hidden]{display:none}
+h2{font-size:15px;margin:26px 0 10px}
+#pv canvas{width:100%;height:auto;border-radius:14px;display:block;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+#msg{font-size:12px;color:var(--mute);min-height:18px}
+.in,.ni,.si,.ri,.ti{font-size:16px;border:2px solid transparent}
+.ni,.si,.ri{background:var(--cell)}
+.ni:focus,.si:focus,.ri:focus,.in:focus,.ti:focus{outline:0;border-color:var(--acc)}
+.g3{display:flex;gap:10px;margin-bottom:10px}
+.fld{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.fld span{font-size:12px;color:var(--mute)}
+.fld input{width:100%;text-align:center}
+.si[readonly]{opacity:.55}
+.ex.ss{border-inline-start-color:var(--ink)}
+.ex.fol{margin-top:-4px;border-top-left-radius:6px;border-top-right-radius:6px}
+.sst{font-size:12px;font-weight:600;color:var(--acc);margin-bottom:8px}
+.lk{border:0;border-radius:9px;background:var(--cell);color:var(--ink);padding:8px 10px;font:600 12px Vazirmatn,Tahoma,sans-serif;cursor:pointer}
+.lk.on{background:var(--acc);color:#fff}
+#pv{min-height:200px}
+</style>
+</head>
+<body>
+<div class="lock"><div class="logo">OA23</div><div class="lt"><b>FitPlan23</b><span>by OA23 · Omidabdiyan23</span></div></div>
+<div class="f"><input class="in" id="st" placeholder="نام شاگرد (روی عکس چاپ می‌شه)"><input class="in s" id="rt" inputmode="numeric" placeholder="استراحت (ثانیه)"></div>
+<div class="tabs" id="tabs"></div>
+<div id="ed"></div>
+<div class="acts" id="dl">
+<button class="bt" id="dday">دانلود عکس این روز</button>
+<button class="bt g" id="dall">دانلود کل برنامه (JPG)</button>
+<button class="bt l" id="dsep">ذخیره عکس هر روز جدا</button>
+</div>
+<div id="msg"></div>
+<div class="acts"><button class="bt l" id="nw">برنامه‌ی جدید برای شاگرد بعدی</button></div>
+<h2>پیش‌نمایش عکس این روز</h2>
+<div id="pv"></div>
+<script>
+const SAMPLE=[
+{n:"روز اول",e:[["زیر سینه فلای",4,"15"],["شراگ دمبل سنگین",3,"15"],["پرس سینه دستگاه",3,"15"],["بالا سینه دمبل",3,"10"],["لت دست باز معکوس",3,"10"],["تک دمبل روی میز شیبدار",3,"10"],["نشر طرفین",4,"10"],["نشر جلو صفحه + سرشانه دستگاه",10,"10"]]},
+{n:"روز دوم",e:[["جلو ران + پشت ران ایستاده",3,"10+10"],["پرس پا + لانچ راه رفتنی",3,"10+10"],["هاگ پا نیمه بالا",1,"دو ساختار توانی"],["هیپ تراست",3,"18"],["خیاطه",3,"15"],["ساق ایستاده + ساق نشسته",3,"15"],["پشت ران نشسته",3,"15"]]},
+{n:"روز سوم",e:[["پرس سینه + قفسه سینه دمبل",3,"8+8"],["سرشانه هالتر",3,"10"],["فلای بک",3,"15"],["زیر سینه هالتر",3,"10"],["فیس پول",3,"10"],["بالا سینه هالتر سنگین",3,"6"],["لت دست باز",3,"10"],["پول دون",3,"10"],["نشر خم میز شیبدار",3,"10"],["فلای بالا سینه دمبل",3,"10"]]},
+{n:"روز چهارم",e:[["جلو بازو هالتر دست جمع",3,"10"],["پشت بازو سیم‌کش",3,"10"],["کیک بک",3,"10"],["جلو بازو دست جمع تک دمبل",3,"10"],["پشت بازو میز شیب‌دار",3,"10"],["جلو بازو چکشی",3,"10"],["پشت بازو پرسی",3,"6"],["جلو بازو دمبل + دمبل چکشی",3,"8+8"],["پشت بازو دیپ",3,"10"]]}
+];
+const $=id=>document.getElementById(id);
+const q=s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const fa=s=>String(s).replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[d]);
+const num=r=>/^[\d۰-۹]/.test(r);
+let P={student:"",rest:"60",day:0,days:JSON.parse(JSON.stringify(SAMPLE))};
+try{const r=localStorage.getItem("fp23");if(r)P=Object.assign(P,JSON.parse(r))}catch(e){}
+if(P.day>=P.days.length)P.day=0;
+function mig(){P.days.forEach(d=>{const n=[];d.e.forEach(x=>{const p=String(x[0]).split(/\s*\+\s*/).filter(Boolean);if(p.length==2&&!x[3]){const r=String(x[2]).split(/\s*\+\s*/);n.push([p[0],x[1],r[0],true],[p[1],x[1],r.length>1&&r[1]?r[1]:r[0]])}else n.push(x)});d.e=n});P.mig=1}
+if(!P.mig)mig();
+const save=()=>{try{localStorage.setItem("fp23",JSON.stringify(P))}catch(e){}};
+let tm=0;const later=()=>{clearTimeout(tm);tm=setTimeout(pv,600)};
+function sync(d){d.e.forEach((x,i)=>{if(i>0&&d.e[i-1][3])x[1]=d.e[i-1][1]});if(d.e.length)d.e[d.e.length-1][3]=false}
+function groups(d){const g=[];d.e.forEach((x,i)=>{if(i>0&&d.e[i-1][3])g[g.length-1].push(x);else g.push([x])});return g}
+const G=14,RH=84;
+const blockH=g=>g.length>1?64+g.length*84+G:RH+G;
+const dh=d=>Math.max(1527,56+150+groups(d).reduce((a,g)=>a+blockH(g),0)+40+120+56);
+
+function render(){
+  $("st").value=P.student;$("rt").value=P.rest;
+  $("tabs").innerHTML=P.days.map((x,i)=>`<button class="tab${i==P.day?" on":""}" data-d="${i}">${q(x.n||"روز")}</button>`).join("")+`<button class="tab" data-addday="1">+ روز</button>`;
+  const d=P.days[P.day];sync(d);
+  $("ed").innerHTML=`<input class="ti" data-t="1" value="${q(d.n)}">`+d.e.map((x,i)=>{
+    const fol=i>0&&d.e[i-1][3],ss=fol||x[3];
+    return `<div class="ex${fol?" fol":""}${ss?" ss":""}">${fol?`<div class="sst">🔗 سوپر ست با حرکت بالا</div>`:""}<input class="ni" data-i="${i}" data-f="0" placeholder="نام حرکت" value="${q(x[0])}"><div class="g3"><label class="fld"><span>ست${fol?" (مشترک)":""}</span><input class="si" data-i="${i}" data-f="1" inputmode="numeric"${fol?" readonly":""} value="${x[1]}"></label><label class="fld"><span>تکرار</span><input class="ri" data-i="${i}" data-f="2" placeholder="مثلاً 10" value="${q(x[2])}"></label></div><div class="ln">${i<d.e.length-1?`<button class="lk${x[3]?" on":""}" data-lk="${i}">${x[3]?"✓ سوپر ست با حرکت بعدی":"+ سوپر ست با حرکت بعدی"}</button>`:""}<button class="mv" data-up="${i}">▲</button><button class="mv" data-dn="${i}">▼</button><button class="del" data-del="${i}">حذف</button></div></div>`}).join("")+`<div class="acts"><button class="bt" data-add="1">+ افزودن حرکت</button>${P.days.length>1?`<button class="bt l" data-delday="1">حذف این روز</button>`:""}</div>`;
+  pv();
+}
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.id=="st")P.student=t.value;
+  else if(t.id=="rt")P.rest=t.value;
+  else if(t.dataset.t){P.days[P.day].n=t.value}
+  else if(t.dataset.i!==undefined){
+    const d=P.days[P.day],x=d.e[+t.dataset.i],f=+t.dataset.f;
+    x[f]=f==1?Math.max(1,Math.min(20,parseInt(t.value.replace(/[۰-۹]/g,c=>"۰۱۲۳۴۵۶۷۸۹".indexOf(c)))||1)):t.value;
+    if(f==1){sync(d);document.querySelectorAll(".si").forEach(el=>{if(el!==t)el.value=d.e[+el.dataset.i][1]})}
+  }
+  else return;
+  save();later();
+});
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  const d=P.days[P.day],ds=t.dataset;
+  if(ds.d!==undefined){P.day=+ds.d}
+  else if(ds.addday){const nm=["اول","دوم","سوم","چهارم","پنجم","ششم","هفتم"];P.days.push({n:"روز "+(nm[P.days.length]||fa(P.days.length+1)),e:[["",3,"10"]]});P.day=P.days.length-1}
+  else if(ds.add){d.e.push(["",3,"10"])}
+  else if(ds.del!==undefined){d.e.splice(+ds.del,1);if(!d.e.length)d.e.push(["",3,"10"])}
+  else if(ds.lk!==undefined){const x=d.e[+ds.lk];x[3]=!x[3]}
+  else if(ds.up!==undefined){const i=+ds.up;if(i>0){[d.e[i-1],d.e[i]]=[d.e[i],d.e[i-1]]}}
+  else if(ds.dn!==undefined){const i=+ds.dn;if(i<d.e.length-1){[d.e[i+1],d.e[i]]=[d.e[i],d.e[i+1]]}}
+  else if(ds.delday){P.days.splice(P.day,1);P.day=Math.max(0,P.day-1)}
+  else return;
+  save();render();
+});
+let armed=0;
+$("nw").onclick=()=>{
+  if(!armed){armed=1;$("nw").textContent="مطمئنی؟ دوباره بزن (برنامه‌ی فعلی پاک می‌شه)";setTimeout(()=>{armed=0;$("nw").textContent="برنامه‌ی جدید برای شاگرد بعدی"},4000);return}
+  armed=0;$("nw").textContent="برنامه‌ی جدید برای شاگرد بعدی";
+  P.student="";P.day=0;P.days=[{n:"روز اول",e:[["",3,"10"]]}];save();render();
+};
+
+let DL=null;
+const FT=(wt,sz)=>wt+" "+sz+"px Vazirmatn,Tahoma,sans-serif";
+function fit(c,t,w,sz,wt){while(sz>14){c.font=FT(wt,sz);if(c.measureText(t).width<=w)break;sz--}}
+function rr(c,x,y,w,h,r,f){c.fillStyle=f;c.beginPath();c.roundRect(x,y,w,h,r);c.fill()}
+function draw(d,S){
+  const W=1080,P0=56,H=dh(d);
+  const cv=document.createElement("canvas");cv.width=W*S;cv.height=H*S;
+  const c=cv.getContext("2d");c.scale(S,S);c.direction="rtl";c.textBaseline="alphabetic";
+  c.fillStyle="#F1F5FA";c.fillRect(0,0,W,H);
+  const sub=[P.student?"شاگرد: "+P.student:"",P.rest?"استراحت: "+fa(P.rest)+" ثانیه":""].filter(Boolean).join("  ·  ");
+  let y=P0;
+  c.fillStyle="#0A0A0A";c.textAlign="right";c.font="400 82px Lalezar,Vazirmatn,Tahoma,sans-serif";c.fillText(d.n||"",W-P0,y+72);
+  rr(c,P0,y+8,200,58,29,"#0A0A0A");c.fillStyle="#fff";c.textAlign="center";c.font=FT(700,24);c.fillText("FitPlan23",P0+100,y+45);
+  if(sub){c.fillStyle="#7b8797";c.textAlign="right";c.font=FT(600,26);c.fillText(sub,W-P0,y+122)}
+  y+=150;
+  const rep=x=>num(x[2])?fa(x[2]):x[2];
+  groups(d).forEach(g=>{
+    if(g.length==1){
+      const x=g[0],rt=rep(x),showSets=!(x[1]==1&&!num(x[2]));
+      rr(c,P0,y,W-2*P0,RH,22,"#E2EAF4");rr(c,W-P0-8,y+8,8,RH-16,4,"#2563EB");
+      c.fillStyle="#0A0A0A";c.textAlign="right";fit(c,x[0],630,31,700);c.fillText(x[0],W-P0-30,y+RH/2+11);
+      let px=P0+16;
+      if(showSets){rr(c,px,y+16,110,RH-32,14,"#fff");c.fillStyle="#0A0A0A";c.textAlign="center";fit(c,fa(x[1])+" ست",90,26,700);c.fillText(fa(x[1])+" ست",px+55,y+RH/2+9);px+=120}
+      rr(c,px,y+16,150,RH-32,14,"#fff");c.fillStyle="#0A0A0A";c.textAlign="center";fit(c,rt,130,26,700);c.fillText(rt,px+75,y+RH/2+9);
+    }else{
+      const gh=blockH(g)-G;
+      rr(c,P0,y,W-2*P0,gh,26,"#D3E1F5");
+      c.strokeStyle="#2563EB";c.lineWidth=3;c.beginPath();c.roundRect(P0+1.5,y+1.5,W-2*P0-3,gh-3,25);c.stroke();
+      rr(c,W-P0-14-150,y+12,150,38,19,"#2563EB");c.fillStyle="#fff";c.textAlign="center";c.font=FT(700,22);c.fillText("سوپر ست",W-P0-14-75,y+38);
+      const st=fa(g[0][1])+" ست";
+      rr(c,P0+14,y+12,120,38,19,"#fff");c.fillStyle="#0A0A0A";c.textAlign="center";fit(c,st,100,22,700);c.fillText(st,P0+74,y+38);
+      let ry=y+62;
+      g.forEach(x=>{
+        rr(c,P0+14,ry,W-2*P0-28,74,18,"#F1F5FA");
+        c.fillStyle="#0A0A0A";c.textAlign="right";fit(c,x[0],640,29,700);c.fillText(x[0],W-P0-36,ry+47);
+        rr(c,P0+28,ry+14,150,46,13,"#fff");c.fillStyle="#0A0A0A";c.textAlign="center";fit(c,rep(x),130,24,700);c.fillText(rep(x),P0+103,ry+45);
+        ry+=84;
+      });
+    }
+    y+=blockH(g);
+  });
+  const fy=H-P0-120;
+  c.direction="ltr";rr(c,P0,fy,W-2*P0,120,28,"#0A0A0A");rr(c,W-P0-100,fy+20,80,80,22,"#2563EB");
+  c.textAlign="center";c.fillStyle="#fff";c.font=FT(900,26);c.fillText("OA23",W-P0-60,fy+70);
+  c.textAlign="right";c.font=FT(700,32);c.fillText("Omidabdiyan23",W-P0-124,fy+55);
+  c.fillStyle="#9DB8F5";c.font=FT(400,26);c.fillText("09020230333",W-P0-124,fy+92);
+  c.direction="rtl";c.textAlign="left";c.font=FT(700,24);c.fillText("FitPlan23",P0+30,fy+70);
+  return cv;
+}
+function pv(){const b=$("pv"),c=draw(P.days[P.day],1);b.style.minHeight=b.offsetHeight+"px";b.replaceChildren(c)}
+async function ld(){try{await Promise.all([document.fonts.load("900 40px Vazirmatn","روز اول ست تکرار ۱۲۳"),document.fonts.load("700 28px Vazirmatn","روز اول ست تکرار ۱۲۳ سوپر"),document.fonts.load("400 28px Vazirmatn","09020230333"),document.fonts.load("400 40px Lalezar","روز اول ۱۲۳")])}catch(e){}}
+async function mk(d){const cv=draw(d,2);const b=await new Promise(r=>cv.toBlob(r,"image/jpeg",.93));return{b,cv}}
+async function saveFile(blob,fn){const m=$("msg");try{const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);m.textContent="ذخیره شد ✓"}catch(e){m.textContent="ذخیره نشد، دوباره امتحان کن"}}
+async function outJpg(d,fn){$("msg").textContent="";await ld();const {b}=await mk(d);await saveFile(b,fn)}
+async function outAll(days,fn){
+  const m=$("msg");m.textContent="در حال ساخت عکس…";await ld();
+  const sum=days.reduce((a,d)=>a+dh(d),0),S=Math.min(2,Math.sqrt(12e6/(1080*sum)));
+  const cs=days.map(d=>draw(d,S)),cv=document.createElement("canvas");
+  cv.width=cs[0].width;cv.height=cs.reduce((a,c)=>a+c.height,0);
+  const c=cv.getContext("2d");let y=0;cs.forEach(x=>{c.drawImage(x,0,y);y+=x.height});
+  const b=await new Promise(r=>cv.toBlob(r,"image/jpeg",.92));
+  m.textContent="";await saveFile(b,fn);
+}
+const slug=()=>"fitplan23"+(P.student?"-"+P.student.replace(/[^\w\u0600-\u06FF]+/g,"_"):"");
+$("dday").onclick=()=>outJpg(P.days[P.day],slug()+"-day"+(P.day+1)+".jpg");
+$("dall").onclick=()=>outAll(P.days,slug()+"-all.jpg");
+$("dsep").onclick=async()=>{for(let i=0;i<P.days.length;i++){await outJpg(P.days[i],slug()+"-day"+(i+1)+".jpg");if($("msg").textContent!="ذخیره شد ✓")break;await new Promise(r=>setTimeout(r,600))}};
+render();ld().then(pv);
+</script>
+</body>
+</html>
