@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FitPlan23 — فرم اطلاعات شاگرد</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F1F5FA;--row:#E2EAF4;--ink:#0A0A0A;--on-ink:#fff;--cell:#fff;--mute:#7b8797;--acc:#2563EB;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1218;--row:#1A212B;--ink:#F1F5FA;--on-ink:#0A0A0A;--cell:#26303D;--mute:#8d99aa;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1218;--row:#1A212B;--ink:#F1F5FA;--on-ink:#0A0A0A;--cell:#26303D;--mute:#8d99aa;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;max-width:560px;margin-inline:auto;padding:20px 16px 48px}
+.lock{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.logo{width:48px;height:48px;flex:none;border-radius:14px;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font:900 15px Vazirmatn,Tahoma,sans-serif;direction:ltr}
+.lt{display:flex;flex-direction:column;direction:ltr;text-align:right;line-height:1.4}
+.lt b{font-size:17px}.lt span{font-size:12px;color:var(--mute)}
+h1{font-size:30px;font-weight:900;margin:6px 0 6px;line-height:1.3}
+.sub{color:var(--mute);font-size:13px;margin:0 0 18px;line-height:1.8}
+.box{background:var(--row);border-radius:18px;border-inline-start:5px solid var(--acc);padding:14px;margin-bottom:12px}
+.fl{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.fl:last-child{margin-bottom:0}
+.fl>span{font-size:12px;color:var(--mute);font-weight:600}
+input,textarea{width:100%;border:2px solid transparent;border-radius:11px;background:var(--cell);color:var(--ink);padding:11px 12px;font:600 16px Vazirmatn,Tahoma,sans-serif}
+textarea{min-height:70px;resize:vertical}
+input:focus,textarea:focus{outline:0;border-color:var(--acc)}
+.r3{display:flex;gap:8px}
+.r3 .fl{flex:1;min-width:0}
+.ch{display:flex;gap:8px;flex-wrap:wrap}
+.ch button{border:2px solid transparent;border-radius:11px;background:var(--cell);color:var(--ink);padding:10px 14px;font:600 14px Vazirmatn,Tahoma,sans-serif;cursor:pointer}
+.ch button.on{background:var(--acc);color:#fff}
+.note{background:var(--cell);border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.9;color:var(--mute);margin-bottom:12px}
+.send{display:flex;flex-direction:column;gap:8px}
+.bt{border:0;border-radius:13px;padding:14px;font:700 15px Vazirmatn,Tahoma,sans-serif;cursor:pointer;color:#fff;background:var(--acc)}
+.bt.k{background:var(--ink);color:var(--on-ink)}
+.bt.g{background:#16a34a}
+.bt.b{background:#229ED9}
+.bt.i{background:#c13584}
+#err{color:#dc2626;font-size:13px;min-height:18px;margin-bottom:6px;font-weight:600}
+#ok{color:var(--mute);font-size:12px;margin-top:10px;min-height:18px;line-height:1.8}
+.ph{display:flex;gap:8px;margin-bottom:12px}
+.ph label{flex:1;aspect-ratio:3/4;border:2px dashed var(--mute);border-radius:14px;background:var(--cell);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;overflow:hidden;position:relative;font-size:12px;font-weight:600;color:var(--mute);text-align:center}
+.ph label b{font-size:30px;color:var(--acc);line-height:1}
+.ph label.has{border-style:solid;border-color:var(--acc)}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2;font-size:0}
+.ph em{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-style:normal;font-size:11px;padding:4px}
+.hint{font-size:12px;color:var(--mute);margin:10px 0 8px;line-height:1.9}
+.sm{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sm .bt{font-size:13px;padding:11px}
+.res{background:var(--row);border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:15px;line-height:2;font-weight:700}
+.card{margin-top:26px;background:var(--ink);color:var(--on-ink);border-radius:20px;padding:18px;display:flex;align-items:center;gap:14px}
+.card .logo{background:var(--acc);color:#fff;width:56px;height:56px;font-size:17px}
+.ct{display:flex;flex-direction:column;gap:2px;direction:ltr;text-align:right}
+.ct b{font-size:18px}.ct span{opacity:.8;font-size:14px}.ct small{opacity:.6;font-size:11px}
+</style>
+</head>
+<body>
+<div class="lock"><div class="logo">OA23</div><div class="lt"><b>FitPlan23</b><span>by OA23 · Omidabdiyan23</span></div></div>
+<h1>فرم اطلاعات شاگرد</h1>
+<p class="sub">اطلاعات زیر رو پر کن و برای مربی بفرست تا برنامه‌ی اختصاصی خودت نوشته بشه.</p>
+
+<div class="box">
+<label class="fl"><span>نام و نام خانوادگی</span><input id="name" autocomplete="name"></label>
+<div class="r3">
+<label class="fl"><span>سن</span><input id="age" inputmode="numeric"></label>
+<label class="fl"><span>قد (cm)</span><input id="h" inputmode="numeric"></label>
+<label class="fl"><span>وزن (kg)</span><input id="w" inputmode="decimal"></label>
+</div>
+<div class="fl"><span>جنسیت</span><div class="ch" data-g="gender"><button>مرد</button><button>زن</button></div></div>
+</div>
+
+<div class="box">
+<div class="fl"><span>هدف</span><div class="ch" data-g="goal"><button>کاهش وزن</button><button>افزایش حجم</button><button>اصلاح اندام</button><button>تناسب اندام</button><button>افزایش قدرت</button></div></div>
+<div class="fl"><span>سطح تمرین</span><div class="ch" data-g="level"><button>مبتدی</button><button>متوسط</button><button>پیشرفته</button></div></div>
+<div class="fl"><span>چند روز در هفته می‌تونی تمرین کنی؟</span><div class="ch" data-g="days"><button>۳</button><button>۴</button><button>۵</button><button>۶</button></div></div>
+<div class="fl"><span>محل تمرین</span><div class="ch" data-g="place"><button>باشگاه</button><button>خانه</button></div></div>
+</div>
+
+<div class="box">
+<label class="fl"><span>مصدومیت یا بیماری (اگه نداری خالی بذار)</span><textarea id="inj"></textarea></label>
+<label class="fl"><span>دارو یا مکمل مصرفی</span><textarea id="sup"></textarea></label>
+<label class="fl"><span>توضیحات دیگه</span><textarea id="note"></textarea></label>
+</div>
+
+<div class="box">
+<div class="res" id="res"></div>
+<button class="bt k" id="calc" style="width:100%">محاسبه BMI و پروتئین روزانه</button>
+</div>
+<div class="box">
+<div class="fl"><span>۳ تا عکس از بدنت اضافه کن</span></div>
+<div class="ph" id="ph">
+<label data-i="0"><input type="file" accept="image/*"><b>+</b>روبه‌رو</label>
+<label data-i="1"><input type="file" accept="image/*"><b>+</b>پهلو</label>
+<label data-i="2"><input type="file" accept="image/*"><b>+</b>پشت</label>
+</div>
+<div class="note" style="margin:0">با لباس ورزشی و نور خوب بگیر و کل بدن توی کادر باشه.</div>
+</div>
+<div id="err"></div>
+<button class="bt" id="sh" style="width:100%">اتمام: ساخت فایل PDF و ارسال به مربی</button>
+<button class="bt k" id="pr" style="width:100%">چاپ فایل</button>
+<div class="hint">بعد از زدن دکمه، یه فایل PDF از همه‌ی اطلاعات و هر سه عکس ساخته می‌شه و مستقیم برای مربی می‌ره. اگه ارسال مستقیم کار نکرد، فایل دانلود می‌شه و می‌تونی با واتساپ یا تلگرام بفرستی. دکمه‌ی «چاپ فایل» هم همون فایل رو برای چاپ باز می‌کنه.</div>
+<div class="hint">اگه دکمه‌ی بالا کار نکرد، فقط متن رو با این‌ها بفرست و عکس‌ها رو توی چت بفرست:</div>
+<div class="sm">
+<button class="bt g" id="wa">واتساپ</button>
+<button class="bt b" id="tg">تلگرام</button>
+<button class="bt i" id="ig">اینستاگرام</button>
+<button class="bt k" id="cp">کپی پیام</button>
+</div>
+<div id="ok"></div>
+
+<div class="card"><div class="logo">OA23</div><div class="ct"><b>Omidabdiyan23</b><span>09020230333</span><small>FitPlan23 · OA23</small></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+// تنظیمات ارسال مستقیم به تلگرام مربی. اینجا رو پر کن:
+// token = توکن ربات تلگرام، chat = آیدی عددی چت مربی
+const TG={token:"",chat:""};
+const PHONE="989020230333",IG="Omidabdiyan23";
+const S={};
+document.querySelectorAll(".ch").forEach(g=>g.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  g.querySelectorAll("button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");S[g.dataset.g]=b.textContent;
+}));
+const v=id=>$(id).value.trim();
+function msg(){
+  const L=[["نام",v("name")],["سن",v("age")],["جنسیت",S.gender],["قد (سانتی‌متر)",v("h")],["وزن (کیلوگرم)",v("w")],["هدف",S.goal],["سطح تمرین",S.level],["روز تمرین در هفته",S.days],["محل تمرین",S.place],["مصدومیت یا بیماری",v("inj")],["دارو یا مکمل",v("sup")],["توضیحات",v("note")]];
+  return "سلام، اطلاعات من برای برنامه تمرین (FitPlan23):\n"+L.filter(x=>x[1]).map(x=>x[0]+": "+x[1]).join("\n")+"\n\nعکس‌های بدنم (روبه‌رو، پهلو، پشت) رو هم الان می‌فرستم.";
+}
+function ok(){
+  if(!v("name")||!v("age")||!v("h")||!v("w")||!S.goal){$("err").textContent="اسم، سن، قد، وزن و هدف رو حتماً پر کن";return false}
+  $("err").textContent="";return true;
+}
+async function copy(t){
+  try{await navigator.clipboard.writeText(t);return true}catch(e){}
+  try{const a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();const r=document.execCommand("copy");a.remove();return r}catch(e){return false}
+}
+const go=u=>{const w=window.open(u,"_blank");if(!w)location.href=u};
+$("wa").onclick=()=>{if(!ok())return;$("ok").textContent="واتساپ باز می‌شه؛ فقط دکمه‌ی ارسال رو بزن.";go("https://wa.me/"+PHONE+"?text="+encodeURIComponent(msg()))};
+$("tg").onclick=()=>{if(!ok())return;$("ok").textContent="تلگرام باز می‌شه؛ مربی (Omidabdiyan23) رو از لیست انتخاب کن و ارسال رو بزن.";go("https://t.me/share/url?url="+encodeURIComponent("https://t.me/"+IG)+"&text="+encodeURIComponent(msg()))};
+$("ig").onclick=async()=>{if(!ok())return;const c=await copy(msg());$("ok").textContent=c?"پیام کپی شد. توی دایرکت باز‌شده فقط پیست کن و بفرست.":"کپی نشد؛ دکمه‌ی «فقط کپی پیام» رو بزن و دستی پیست کن.";go("https://ig.me/m/"+IG)};
+$("cp").onclick=async()=>{if(!ok())return;$("ok").textContent=(await copy(msg()))?"پیام کپی شد. هر جا خواستی پیست کن و بفرست.":"کپی نشد، دوباره امتحان کن."};
+async function comp(file){
+  let bm;try{bm=await createImageBitmap(file,{imageOrientation:"from-image"})}catch(e){bm=await createImageBitmap(file)}
+  const sc=Math.min(1,1280/Math.max(bm.width,bm.height)),c=document.createElement("canvas");
+  c.width=Math.round(bm.width*sc);c.height=Math.round(bm.height*sc);
+  c.getContext("2d").drawImage(bm,0,0,c.width,c.height);
+  return await new Promise(r=>c.toBlob(r,"image/jpeg",.85));
+}
+const P3=[null,null,null],NM=["front","side","back"];
+document.querySelectorAll("#ph label").forEach(l=>l.addEventListener("click",e=>{if(e.target.tagName!="INPUT"){const inp=l.querySelector("input");inp.value="";inp.click()}}));
+document.querySelectorAll("#ph label").forEach(l=>l.querySelector("input").addEventListener("change",async e=>{
+  const f=e.target.files[0];if(!f)return;const i=+l.dataset.i;
+  try{
+    const b=await comp(f);P3[i]=b;l.classList.add("has");
+    l.querySelectorAll("img,em").forEach(x=>x.remove());
+    const im=document.createElement("img");im.src=URL.createObjectURL(b);l.appendChild(im);
+    const em=document.createElement("em");em.textContent="تغییر عکس";l.appendChild(em);
+    $("err").textContent="";
+  }catch(err){$("err").textContent="این عکس خونده نشد، یکی دیگه انتخاب کن"}
+}));
+const fa2=x=>String(x).replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[d]);
+function calc(){
+  const w=parseFloat(v("w").replace(",",".")),h=parseFloat(v("h").replace(",","."));
+  if(!w||!h||h<100||h>250||w<20||w>400)return null;
+  const bmi=w/((h/100)*(h/100));
+  const cls=bmi<18.5?"کم‌وزن":bmi<25?"وزن نرمال":bmi<30?"اضافه وزن":"چاقی";
+  const F={"کاهش وزن":2.0,"افزایش حجم":1.8,"اصلاح اندام":1.8,"تناسب اندام":1.6,"افزایش قدرت":1.8};
+  const f=F[S.goal]||1.6,r5=x=>Math.round(x/5)*5;
+  const hm=h/100,r1=x=>Math.round(x*10)/10;
+  const imin=18.5*hm*hm,imax=24.9*hm*hm;
+  const diff=w>imax?r1(w-imax):w<imin?-r1(imin-w):0;
+  return {bmi:bmi.toFixed(1),cls,pmin:r5(w*(f-0.2)),pmax:r5(w*(f+0.2)),imin:r1(imin).toFixed(1),imax:r1(imax).toFixed(1),diff};
+}
+function wrows(r){
+  const a=["وزن سالم برای قدت",fa2(r.imin)+" تا "+fa2(r.imax)+" کیلوگرم"];
+  if(r.diff>0)return [a,["میزان اضافه وزن",fa2(r.diff.toFixed(1))+" کیلوگرم بالاتر از حد سالم"]];
+  if(r.diff<0)return [a,["کمبود وزن",fa2((-r.diff).toFixed(1))+" کیلوگرم تا حد سالم"]];
+  return [a,["وضعیت وزن","در محدوده‌ی سالم"]];
+}
+function lines(){
+  const L=[["نام",v("name")],["سن",v("age")],["جنسیت",S.gender],["قد (سانتی‌متر)",v("h")],["وزن (کیلوگرم)",v("w")],["هدف",S.goal],["سطح تمرین",S.level],["روز تمرین در هفته",S.days],["محل تمرین",S.place],["مصدومیت یا بیماری",v("inj")],["دارو یا مکمل",v("sup")],["توضیحات",v("note")]].filter(x=>x[1]);
+  const r=calc();
+  if(r)L.push(["BMI",r.bmi+" ("+r.cls+")"],["پروتئین روزانه پیشنهادی",fa2(r.pmin)+" تا "+fa2(r.pmax)+" گرم"],...wrows(r));
+  return L;
+}
+function msg(){
+  return "سلام، اطلاعات من برای برنامه تمرین (FitPlan23):\n"+lines().map(x=>x[0]+": "+x[1]).join("\n")+"\n\nعکس‌های بدنم (روبه‌رو، پهلو، پشت) رو هم الان می‌فرستم.";
+}
+function showRes(){
+  const r=calc();
+  if(!r){$("res").textContent="قد و وزن رو وارد کن تا BMI و پروتئین و وزن سالم محاسبه بشه";return}
+  const extra=wrows(r).map(x=>"<br>"+x[0]+": "+x[1]).join("");
+  $("res").innerHTML="BMI: "+fa2(r.bmi)+" — "+r.cls+"<br>پروتئین روزانه‌ی پیشنهادی: "+fa2(r.pmin)+" تا "+fa2(r.pmax)+" گرم"+extra+"<br><span style=\"font-weight:400;font-size:12px;color:var(--mute)\">این عددها تقریبی‌ان. اگه بیماری کلیه یا مشکل پزشکی داری، قبل از تغییر رژیم با پزشک مشورت کن.</span>";
+}
+$("calc").onclick=showRes;
+document.addEventListener("input",e=>{if(e.target.id=="w"||e.target.id=="h")showRes()});
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest(".ch"))setTimeout(showRes,0)});
+showRes();
+async function cardImg(){
+  const W=1080,gap=18,pw=(W-2*P0-2*gap)/3,ph=Math.round(pw*4/3);
+  const L=lines(),lh=58,infoH=L.length*lh+30;
+  const H=P0+110+infoH+40+ph+70+150+P0;
+  const c=document.createElement("canvas");c.width=W;c.height=H;
+  const g=c.getContext("2d");g.direction="rtl";g.textBaseline="alphabetic";
+  g.fillStyle="#F1F5FA";g.fillRect(0,0,W,H);
+  const F=(w,z)=>w+" "+z+"px Vazirmatn,Tahoma,sans-serif";
+  let y=P0;
+  rr(g,P0,y,200,56,28,"#0A0A0A");g.fillStyle="#fff";g.textAlign="center";g.font=F(700,24);g.fillText("FitPlan23",P0+100,y+38);
+  g.fillStyle="#0A0A0A";g.textAlign="right";g.font=F(900,46);g.fillText("اطلاعات شاگرد",W-P0,y+42);
+  y+=110;
+  rr(g,P0,y,W-2*P0,infoH,22,"#E2EAF4");
+  let ry=y+15;
+  L.forEach(x=>{
+    g.fillStyle="#7b8797";g.textAlign="right";g.font=F(600,26);g.fillText(x[0],W-P0-24,ry+38);
+    let sz=28,val=String(x[1]);g.font=F(700,sz);
+    while(g.measureText(val).width>560&&sz>16){sz--;g.font=F(700,sz)}
+    g.fillStyle="#0A0A0A";g.textAlign="left";g.fillText(val,P0+24,ry+38);
+    ry+=lh;
+  });
+  y+=infoH+40;
+  for(let i=0;i<3;i++){
+    const x=P0+i*(pw+gap),bm=await createImageBitmap(P3[i]);
+    const sc=Math.max(pw/bm.width,ph/bm.height),dw=bm.width*sc,dh=bm.height*sc;
+    g.save();g.beginPath();g.roundRect(x,y,pw,ph,18);g.clip();
+    g.drawImage(bm,x+(pw-dw)/2,y+(ph-dh)/2,dw,dh);g.restore();
+    g.fillStyle="#0A0A0A";g.textAlign="center";g.font=F(600,24);g.fillText(["روبه‌رو","پهلو","پشت"][i],x+pw/2,y+ph+42);
+  }
+  y+=ph+70;
+  rr(g,P0,y,W-2*P0,150,28,"#0A0A0A");
+  rr(g,W-P0-100,y+35,80,80,22,"#2563EB");
+  g.fillStyle="#fff";g.textAlign="center";g.font=F(900,26);g.fillText("OA23",W-P0-60,y+85);
+  g.textAlign="right";g.font=F(700,32);g.fillText("Omidabdiyan23",W-P0-124,y+70);
+  g.fillStyle="#9DB8F5";g.font=F(400,26);g.fillText("09020230333",W-P0-124,y+110);
+  g.direction="rtl";g.textAlign="left";g.fillStyle="#fff";g.font=F(700,24);g.fillText("FitPlan23",P0+30,y+85);
+  return await new Promise(r=>c.toBlob(r,"image/jpeg",.92));
+}
+function makePdf(jpg,iw,ih){
+  const enc=new TextEncoder(),parts=[],offs=[];let len=0;
+  const add=b=>{if(typeof b=="string")b=enc.encode(b);parts.push(b);len+=b.length};
+  const obj=(n,body)=>{offs[n]=len;add(n+" 0 obj\n"+body+"\nendobj\n")};
+  const W=595,H=Math.round(595*ih/iw);
+  add("%PDF-1.4\n");
+  obj(1,"<< /Type /Catalog /Pages 2 0 R >>");
+  obj(2,"<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+  obj(3,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+W+" "+H+"] /Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>");
+  const cs="q "+W+" 0 0 "+H+" 0 0 cm /Im0 Do Q";
+  obj(4,"<< /Length "+cs.length+" >>\nstream\n"+cs+"\nendstream");
+  offs[5]=len;
+  add("5 0 obj\n<< /Type /XObject /Subtype /Image /Width "+iw+" /Height "+ih+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpg.length+" >>\nstream\n");
+  add(jpg);add("\nendstream\nendobj\n");
+  const n=6,xr=len;
+  let x="xref\n0 "+n+"\n0000000000 65535 f \n";
+  for(let i=1;i<n;i++)x+=String(offs[i]).padStart(10,"0")+" 00000 n \n";
+  add(x+"trailer\n<< /Size "+n+" /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
+  return new Blob(parts,{type:"application/pdf"});
+}
+function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}
+$("sh").onclick=async()=>{
+  if(!ok())return;
+  if(P3.some(x=>!x)){$("err").textContent="هر سه عکس رو اضافه کن";return}
+  $("err").textContent="";
+  $("ok").textContent="در حال ساخت فایل…";
+  try{await document.fonts.load("700 28px Vazirmatn")}catch(e){}
+  let pdf;
+  try{
+    const jpg=await cardImg();const bm=await createImageBitmap(jpg);
+    pdf=makePdf(new Uint8Array(await jpg.arrayBuffer()),bm.width,bm.height);
+  }catch(e){$("ok").textContent="ساخت فایل ناموفق بود، دوباره امتحان کن.";return}
+  const text=msg();
+  const nm=(v("name")||"student").replace(/\s+/g,"_");
+  const fname="FitPlan23-"+nm+".pdf";
+  const file=new File([pdf],fname,{type:"application/pdf"});
+  try{navigator.clipboard.writeText(text)}catch(e){}
+  if(TG.token&&TG.chat){
+    $("ok").textContent="در حال ارسال به مربی…";
+    try{
+      const fd=new FormData();
+      fd.append("chat_id",TG.chat);
+      fd.append("caption",text.slice(0,1000));
+      fd.append("document",file,fname);
+      const r=await fetch("https://api.telegram.org/bot"+TG.token+"/sendDocument",{method:"POST",body:fd});
+      const j=await r.json();
+      if(j&&j.ok){$("ok").textContent="✓ فایل PDF با همه‌ی اطلاعات و عکس‌ها برای مربی ارسال شد. ممنون!";return}
+    }catch(e){}
+    download(pdf,fname);
+    $("ok").textContent="ارسال مستقیم نشد (شاید تلگرام قطع باشه و VPN لازم باشه). فایل دانلود شد؛ از واتساپ یا تلگرام برای مربی بفرست.";
+    return;
+  }
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file],text,title:"FitPlan23"});$("ok").textContent="فایل فرستاده شد یا لیست باز شد."}
+    catch(e){$("ok").textContent=(e&&e.name=="AbortError")?"":"ارسال نشد؛ دوباره امتحان کن."}
+  }else{
+    download(pdf,fname);
+    $("ok").textContent="فایل PDF دانلود شد. اون رو همراه متنی که کپی شده برای مربی بفرست.";
+  }
+};
+$("pr").onclick=async()=>{
+  if(!ok())return;
+  if(P3.some(x=>!x)){$("err").textContent="هر سه عکس رو اضافه کن";return}
+  $("err").textContent="";
+  let jpg;
+  try{jpg=await cardImg()}catch(e){$("err").textContent="ساخت عکس ناموفق بود";return}
+  const u=URL.createObjectURL(jpg);
+  const w=window.open("","_blank");
+  if(!w){$("err").textContent="پنجره‌ی چاپ باز نشد؛ اجازه‌ی پاپ‌آپ رو بده";return}
+  w.document.write('<html dir="rtl"><head><title>FitPlan23</title></head><body style="margin:0"><img src="'+u+'" style="width:100%;display:block"></body></html>');
+  w.document.close();
+  setTimeout(()=>{try{w.focus();w.print()}catch(e){}},700);
+};
+</script>
+</body>
+</html>
