@@ -55,7 +55,13 @@ h2{font-size:15px;margin:26px 0 10px}
 .lk{border:0;border-radius:9px;background:var(--cell);color:var(--ink);padding:8px 10px;font:600 12px Vazirmatn,Tahoma,sans-serif;cursor:pointer}
 .lk.on{background:var(--acc);color:#fff}
 #pv{min-height:200px}
+.memo{width:100%;min-height:240px;border:0;border-inline-start:5px solid var(--acc);border-radius:16px;background:var(--cell);color:var(--ink);padding:16px;font:600 15px/2.1 Vazirmatn,Tahoma,sans-serif;resize:vertical;white-space:pre-wrap}
+#msg2{font-size:12px;color:var(--mute);min-height:18px;margin-bottom:6px}
 </style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2563EB">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
 <div class="lock"><div class="logo">OA23</div><div class="lt"><b>FitPlan23</b><span>by OA23 · Omidabdiyan23</span></div></div>
@@ -69,6 +75,10 @@ h2{font-size:15px;margin:26px 0 10px}
 </div>
 <div id="msg"></div>
 <div class="acts"><button class="bt l" id="nw">برنامه‌ی جدید برای شاگرد بعدی</button></div>
+<h2>متن برنامه (برای کپی)</h2>
+<textarea id="txt" class="memo" readonly></textarea>
+<div class="acts"><button class="bt" id="cpall">کپی همه‌ی روزها</button><button class="bt l" id="cpday">کپی همین روز</button></div>
+<div id="msg2"></div>
 <h2>پیش‌نمایش عکس این روز</h2>
 <div id="pv"></div>
 <script>
@@ -183,12 +193,12 @@ function draw(d,S){
   c.direction="ltr";rr(c,P0,fy,W-2*P0,120,28,"#0A0A0A");rr(c,W-P0-100,fy+20,80,80,22,"#2563EB");
   c.textAlign="center";c.fillStyle="#fff";c.font=FT(900,26);c.fillText("OA23",W-P0-60,fy+70);
   c.textAlign="right";c.font=FT(700,32);c.fillText("Omidabdiyan23",W-P0-124,fy+55);
-  c.fillStyle="#9DB8F5";c.font=FT(400,26);c.fillText("09020230333",W-P0-124,fy+92);
+  c.fillStyle="#9DB8F5";c.font=FT(400,26);c.fillText("09184643859",W-P0-124,fy+92);
   c.direction="rtl";c.textAlign="left";c.font=FT(700,24);c.fillText("FitPlan23",P0+30,fy+70);
   return cv;
 }
-function pv(){const b=$("pv"),c=draw(P.days[P.day],1);b.style.minHeight=b.offsetHeight+"px";b.replaceChildren(c)}
-async function ld(){try{await Promise.all([document.fonts.load("900 40px Vazirmatn","روز اول ست تکرار ۱۲۳"),document.fonts.load("700 28px Vazirmatn","روز اول ست تکرار ۱۲۳ سوپر"),document.fonts.load("400 28px Vazirmatn","09020230333"),document.fonts.load("400 40px Lalezar","روز اول ۱۲۳")])}catch(e){}}
+function pv(){const b=$("pv"),c=draw(P.days[P.day],1);b.style.minHeight=b.offsetHeight+"px";b.replaceChildren(c);upd()}
+async function ld(){try{await Promise.all([document.fonts.load("900 40px Vazirmatn","روز اول ست تکرار ۱۲۳"),document.fonts.load("700 28px Vazirmatn","روز اول ست تکرار ۱۲۳ سوپر"),document.fonts.load("400 28px Vazirmatn","09184643859"),document.fonts.load("400 40px Lalezar","روز اول ۱۲۳")])}catch(e){}}
 async function mk(d){const cv=draw(d,2);const b=await new Promise(r=>cv.toBlob(r,"image/jpeg",.93));return{b,cv}}
 async function saveFile(blob,fn){const m=$("msg");try{const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);m.textContent="ذخیره شد ✓"}catch(e){m.textContent="ذخیره نشد، دوباره امتحان کن"}}
 async function outJpg(d,fn){$("msg").textContent="";await ld();const {b}=await mk(d);await saveFile(b,fn)}
@@ -205,7 +215,29 @@ const slug=()=>"fitplan23"+(P.student?"-"+P.student.replace(/[^\w\u0600-\u06FF]+
 $("dday").onclick=()=>outJpg(P.days[P.day],slug()+"-day"+(P.day+1)+".jpg");
 $("dall").onclick=()=>outAll(P.days,slug()+"-all.jpg");
 $("dsep").onclick=async()=>{for(let i=0;i<P.days.length;i++){await outJpg(P.days[i],slug()+"-day"+(i+1)+".jpg");if($("msg").textContent!="ذخیره شد ✓")break;await new Promise(r=>setTimeout(r,600))}};
+function rp(x){return num(x[2])?fa(x[2])+" تکرار":x[2]}
+function dayText(d){
+  const out=[d.n||"روز"];let n=0;
+  groups(d).forEach(g=>{
+    n++;
+    if(g.length==1){const x=g[0];out.push(fa(n)+". "+(x[0]||"—")+" — "+((x[1]==1&&!num(x[2]))?rp(x):fa(x[1])+" ست × "+(num(x[2])?fa(x[2]):x[2])))}
+    else{out.push(fa(n)+". سوپر ست — "+fa(g[0][1])+" ست");g.forEach((x,i)=>out.push("      "+["الف","ب","ج","د","ه"][i]+") "+(x[0]||"—")+" — "+rp(x)))}
+  });
+  return out.join("\n");
+}
+function headText(){return "FitPlan23 — برنامه تمرین"+(P.student?"\nشاگرد: "+P.student:"")+(P.rest?"\nاستراحت بین ست‌ها: "+fa(P.rest)+" ثانیه":"")}
+const footText="\n\nOA23 · Omidabdiyan23 · 09184643859";
+const allText=()=>headText()+"\n\n"+P.days.map(dayText).join("\n\n")+footText;
+const oneText=()=>headText()+"\n\n"+dayText(P.days[P.day])+footText;
+function upd(){const a=$("txt");if(!a)return;a.value=allText();a.style.height="auto";a.style.height=Math.max(240,a.scrollHeight+4)+"px"}
+async function cpText(t){
+  try{await navigator.clipboard.writeText(t);return true}catch(e){}
+  try{const a=$("txt"),old=a.value;a.value=t;a.focus();a.select();a.setSelectionRange(0,t.length);const ok=document.execCommand("copy");a.value=old;return ok}catch(e){return false}
+}
+$("cpall").onclick=async()=>{$("msg2").textContent=(await cpText(allText()))?"متن همه‌ی روزها کپی شد ✓":"کپی نشد؛ متن رو نگه دار و دستی کپی کن."};
+$("cpday").onclick=async()=>{$("msg2").textContent=(await cpText(oneText()))?"متن این روز کپی شد ✓":"کپی نشد؛ متن رو نگه دار و دستی کپی کن."};
 render();ld().then(pv);
 </script>
+<script>if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
 </body>
 </html>

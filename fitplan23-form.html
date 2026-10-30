@@ -95,10 +95,12 @@ input:focus,textarea:focus{outline:0;border-color:var(--acc)}
 <label data-i="2"><input type="file" accept="image/*"><b>+</b>پشت</label>
 </div>
 <div class="note" style="margin:0">با لباس ورزشی و نور خوب بگیر و کل بدن توی کادر باشه.</div>
+<div class="fl" style="margin-top:12px"><span>اندازه‌ی عکس‌ها (برای گوشی‌های ضعیف، کوچک بذار)</span><div class="ch" data-g="psize"><button class="on">کوچک (سبک‌تر)</button><button>بزرگ (واضح‌تر)</button></div></div>
 </div>
 <div id="err"></div>
-<button class="bt" id="sh" style="width:100%">اتمام و ساخت عکس کامل برای ارسال</button>
-<div class="hint">بعد از زدن دکمه، یه عکس کامل از اطلاعات و هر سه عکس ساخته می‌شه و لیست برنامه‌ها باز می‌شه. واتساپ، تلگرام یا اینستاگرام رو بزن و چت مربی رو انتخاب کن.</div>
+<button class="bt" id="sh" style="width:100%">اتمام: ساخت عکس کامل و ارسال به مربی</button>
+<button class="bt k" id="pr" style="width:100%">ساخت عکس کامل برای ذخیره یا چاپ</button>
+<div class="hint">بعد از زدن دکمه، یه عکس کامل با کیفیت بالا از همه‌ی اطلاعات و هر سه عکس ساخته می‌شه و مستقیم برای مربی می‌ره. اگه ارسال مستقیم کار نکرد، عکس دانلود می‌شه و می‌تونی با واتساپ یا تلگرام بفرستی. دکمه‌ی «چاپ فایل» هم همون فایل رو برای چاپ باز می‌کنه.</div>
 <div class="hint">اگه دکمه‌ی بالا کار نکرد، فقط متن رو با این‌ها بفرست و عکس‌ها رو توی چت بفرست:</div>
 <div class="sm">
 <button class="bt g" id="wa">واتساپ</button>
@@ -108,11 +110,27 @@ input:focus,textarea:focus{outline:0;border-color:var(--acc)}
 </div>
 <div id="ok"></div>
 
-<div class="card"><div class="logo">OA23</div><div class="ct"><b>Omidabdiyan23</b><span>09020230333</span><small>FitPlan23 · OA23</small></div></div>
+<div class="card"><div class="logo">OA23</div><div class="ct"><b>Omidabdiyan23</b><span>09184643859</span><small>FitPlan23 · OA23</small></div></div>
 
 <script>
+if(typeof CanvasRenderingContext2D!=="undefined"&&!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    const rad=typeof r==="number"?r:(Array.isArray(r)?r[0]:0);
+    this.moveTo(x+rad,y);this.arcTo(x+w,y,x+w,y+h,rad);this.arcTo(x+w,y+h,x,y+h,rad);
+    this.arcTo(x,y+h,x,y,rad);this.arcTo(x,y,x+w,y,rad);this.closePath();return this;
+  };
+}
+async function loadBM(blob){
+  try{return await createImageBitmap(blob)}catch(e){}
+  const url=URL.createObjectURL(blob);
+  return await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error("img"));im.src=url});
+}
 const $=id=>document.getElementById(id);
-const PHONE="989020230333",IG="Omidabdiyan23";
+function rr(c,x,y,w,h,r,f){c.fillStyle=f;c.beginPath();c.roundRect(x,y,w,h,r);c.fill()}
+// تنظیمات ارسال مستقیم به تلگرام مربی. اینجا رو پر کن:
+// token = توکن ربات تلگرام، chat = آیدی عددی چت مربی
+const TG={token:"",chat:""};
+const PHONE="989184643859",IG="Omidabdiyan23";
 const S={};
 document.querySelectorAll(".ch").forEach(g=>g.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
@@ -138,17 +156,26 @@ $("tg").onclick=()=>{if(!ok())return;$("ok").textContent="تلگرام باز م
 $("ig").onclick=async()=>{if(!ok())return;const c=await copy(msg());$("ok").textContent=c?"پیام کپی شد. توی دایرکت باز‌شده فقط پیست کن و بفرست.":"کپی نشد؛ دکمه‌ی «فقط کپی پیام» رو بزن و دستی پیست کن.";go("https://ig.me/m/"+IG)};
 $("cp").onclick=async()=>{if(!ok())return;$("ok").textContent=(await copy(msg()))?"پیام کپی شد. هر جا خواستی پیست کن و بفرست.":"کپی نشد، دوباره امتحان کن."};
 async function comp(file){
-  let bm;try{bm=await createImageBitmap(file,{imageOrientation:"from-image"})}catch(e){bm=await createImageBitmap(file)}
-  const sc=Math.min(1,1280/Math.max(bm.width,bm.height)),c=document.createElement("canvas");
-  c.width=Math.round(bm.width*sc);c.height=Math.round(bm.height*sc);
-  c.getContext("2d").drawImage(bm,0,0,c.width,c.height);
-  return await new Promise(r=>c.toBlob(r,"image/jpeg",.85));
+  let src=null;
+  try{src=await createImageBitmap(file,{imageOrientation:"from-image"})}catch(e){src=null}
+  if(!src){
+    const url=URL.createObjectURL(file);
+    src=await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error("img"));im.src=url});
+  }
+  const iw=src.width||src.naturalWidth,ih=src.height||src.naturalHeight;
+  const big=S.psize&&S.psize.indexOf("بزرگ")>=0;const sc=Math.min(1,(big?1600:900)/Math.max(iw,ih));
+  const c=document.createElement("canvas");
+  c.width=Math.round(iw*sc);c.height=Math.round(ih*sc);
+  const g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);
+  g.drawImage(src,0,0,c.width,c.height);
+  return await new Promise(r=>c.toBlob(r,"image/jpeg",.92));
 }
 const P3=[null,null,null],NM=["front","side","back"];
+document.querySelectorAll("#ph label").forEach(l=>l.addEventListener("click",e=>{if(e.target.tagName!="INPUT"){const inp=l.querySelector("input");inp.value="";inp.click()}}));
 document.querySelectorAll("#ph label").forEach(l=>l.querySelector("input").addEventListener("change",async e=>{
-  const f=e.target.files[0];if(!f)return;const i=+l.dataset.i;
+  const f=e.target.files[0];if(!f)return;const i=+l.dataset.i;l.querySelector("b").textContent="…";
   try{
-    const b=await comp(f);P3[i]=b;l.classList.add("has");
+    const b=await comp(f);P3[i]=b;l.classList.add("has");l.querySelector("b").textContent="";
     l.querySelectorAll("img,em").forEach(x=>x.remove());
     const im=document.createElement("img");im.src=URL.createObjectURL(b);l.appendChild(im);
     const em=document.createElement("em");em.textContent="تغییر عکس";l.appendChild(em);
@@ -163,12 +190,21 @@ function calc(){
   const cls=bmi<18.5?"کم‌وزن":bmi<25?"وزن نرمال":bmi<30?"اضافه وزن":"چاقی";
   const F={"کاهش وزن":2.0,"افزایش حجم":1.8,"اصلاح اندام":1.8,"تناسب اندام":1.6,"افزایش قدرت":1.8};
   const f=F[S.goal]||1.6,r5=x=>Math.round(x/5)*5;
-  return {bmi:bmi.toFixed(1),cls,pmin:r5(w*(f-0.2)),pmax:r5(w*(f+0.2))};
+  const hm=h/100,r1=x=>Math.round(x*10)/10;
+  const imin=18.5*hm*hm,imax=24.9*hm*hm;
+  const diff=w>imax?r1(w-imax):w<imin?-r1(imin-w):0;
+  return {bmi:bmi.toFixed(1),cls,pmin:r5(w*(f-0.2)),pmax:r5(w*(f+0.2)),imin:r1(imin).toFixed(1),imax:r1(imax).toFixed(1),diff};
+}
+function wrows(r){
+  const a=["وزن سالم برای قدت",fa2(r.imin)+" تا "+fa2(r.imax)+" کیلوگرم"];
+  if(r.diff>0)return [a,["میزان اضافه وزن",fa2(r.diff.toFixed(1))+" کیلوگرم بالاتر از حد سالم"]];
+  if(r.diff<0)return [a,["کمبود وزن",fa2((-r.diff).toFixed(1))+" کیلوگرم تا حد سالم"]];
+  return [a,["وضعیت وزن","در محدوده‌ی سالم"]];
 }
 function lines(){
   const L=[["نام",v("name")],["سن",v("age")],["جنسیت",S.gender],["قد (سانتی‌متر)",v("h")],["وزن (کیلوگرم)",v("w")],["هدف",S.goal],["سطح تمرین",S.level],["روز تمرین در هفته",S.days],["محل تمرین",S.place],["مصدومیت یا بیماری",v("inj")],["دارو یا مکمل",v("sup")],["توضیحات",v("note")]].filter(x=>x[1]);
   const r=calc();
-  if(r)L.push(["BMI",r.bmi+" ("+r.cls+")"],["پروتئین روزانه پیشنهادی",fa2(r.pmin)+" تا "+fa2(r.pmax)+" گرم"]);
+  if(r)L.push(["BMI",r.bmi+" ("+r.cls+")"],["پروتئین روزانه پیشنهادی",fa2(r.pmin)+" تا "+fa2(r.pmax)+" گرم"],...wrows(r));
   return L;
 }
 function msg(){
@@ -176,69 +212,158 @@ function msg(){
 }
 function showRes(){
   const r=calc();
-  $("res").innerHTML=r?("BMI: "+fa2(r.bmi)+" — "+r.cls+"<br>پروتئین روزانه‌ی پیشنهادی: "+fa2(r.pmin)+" تا "+fa2(r.pmax)+" گرم<br><span style=\"font-weight:400;font-size:12px;color:var(--mute)\">این عددها تقریبی‌ان. اگه بیماری کلیه یا مشکل پزشکی داری، قبل از تغییر رژیم با پزشک مشورت کن.</span>"):"قد و وزن رو وارد کن تا BMI و پروتئین محاسبه بشه";
+  if(!r){$("res").textContent="قد و وزن رو وارد کن تا BMI و پروتئین و وزن سالم محاسبه بشه";return}
+  const extra=wrows(r).map(x=>"<br>"+x[0]+": "+x[1]).join("");
+  $("res").innerHTML="BMI: "+fa2(r.bmi)+" — "+r.cls+"<br>پروتئین روزانه‌ی پیشنهادی: "+fa2(r.pmin)+" تا "+fa2(r.pmax)+" گرم"+extra+"<br><span style=\"font-weight:400;font-size:12px;color:var(--mute)\">این عددها تقریبی‌ان. اگه بیماری کلیه یا مشکل پزشکی داری، قبل از تغییر رژیم با پزشک مشورت کن.</span>";
 }
 $("calc").onclick=showRes;
 document.addEventListener("input",e=>{if(e.target.id=="w"||e.target.id=="h")showRes()});
 document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest(".ch"))setTimeout(showRes,0)});
 showRes();
+function allRows(){
+  const KEYS=["نام","سن","جنسیت","قد (سانتی‌متر)","وزن (کیلوگرم)","هدف","سطح تمرین","روز تمرین در هفته","محل تمرین","مصدومیت یا بیماری","دارو یا مکمل","توضیحات"];
+  const got=lines();
+  const base=KEYS.map(k=>{const f=got.find(x=>x[0]===k);return [k,f?f[1]:"—"]});
+  return base.concat(got.filter(x=>!KEYS.includes(x[0])));
+}
 async function cardImg(){
-  const W=1080,gap=18,pw=(W-2*P0-2*gap)/3,ph=Math.round(pw*4/3);
-  const L=lines(),lh=58,infoH=L.length*lh+30;
-  const H=P0+110+infoH+40+ph+70+150+P0;
-  const c=document.createElement("canvas");c.width=W;c.height=H;
-  const g=c.getContext("2d");g.direction="rtl";g.textBaseline="alphabetic";
-  g.fillStyle="#F1F5FA";g.fillRect(0,0,W,H);
+  const W=1080,P0=56,gap=18,pw=(W-2*P0-2*gap)/3,ph=Math.round(pw*4/3);
+  const L=allRows(),lh=60,infoH=L.length*lh+36;
+  const H=P0+150+infoH+40+ph+80+170+P0;
+  const c=document.createElement("canvas");const SC=1.5;c.width=Math.round(W*SC);c.height=Math.round(H*SC);
+  const g=c.getContext("2d");g.scale(SC,SC);g.direction="rtl";g.textBaseline="alphabetic";
   const F=(w,z)=>w+" "+z+"px Vazirmatn,Tahoma,sans-serif";
-  let y=P0;
-  rr(g,P0,y,200,56,28,"#0A0A0A");g.fillStyle="#fff";g.textAlign="center";g.font=F(700,24);g.fillText("FitPlan23",P0+100,y+38);
-  g.fillStyle="#0A0A0A";g.textAlign="right";g.font=F(900,46);g.fillText("اطلاعات شاگرد",W-P0,y+42);
-  y+=110;
-  rr(g,P0,y,W-2*P0,infoH,22,"#E2EAF4");
-  let ry=y+15;
-  L.forEach(x=>{
-    g.fillStyle="#7b8797";g.textAlign="right";g.font=F(600,26);g.fillText(x[0],W-P0-24,ry+38);
+  g.fillStyle="#F1F5FA";g.fillRect(0,0,W,H);
+  // header
+  rr(g,P0,P0,W-2*P0,120,28,"#0A0A0A");
+  rr(g,W-P0-100,P0+20,80,80,22,"#2563EB");
+  g.fillStyle="#fff";g.textAlign="center";g.font=F(900,26);g.fillText("OA23",W-P0-60,P0+70);
+  g.textAlign="right";g.font=F(900,40);g.fillText("برنامه و اطلاعات بدنی شاگرد",W-P0-130,P0+70);
+  g.textAlign="left";g.direction="ltr";g.fillStyle="#9DB8F5";g.font=F(600,22);g.fillText("FitPlan23",P0+30,P0+70);
+  g.direction="rtl";
+  // info card
+  let y=P0+150;
+  rr(g,P0,y,W-2*P0,infoH,24,"#FFFFFF");
+  let ry=y+18;
+  L.forEach((x,i)=>{
+    g.fillStyle="#7b8797";g.textAlign="right";g.font=F(600,26);g.fillText(x[0],W-P0-30,ry+40);
     let sz=28,val=String(x[1]);g.font=F(700,sz);
-    while(g.measureText(val).width>560&&sz>16){sz--;g.font=F(700,sz)}
-    g.fillStyle="#0A0A0A";g.textAlign="left";g.fillText(val,P0+24,ry+38);
+    while(g.measureText(val).width>520&&sz>16){sz--;g.font=F(700,sz)}
+    g.fillStyle="#0A0A0A";g.textAlign="left";g.fillText(val,P0+30,ry+40);
+    if(i<L.length-1){g.strokeStyle="#E2EAF4";g.lineWidth=2;g.beginPath();g.moveTo(P0+24,ry+lh-4);g.lineTo(W-P0-24,ry+lh-4);g.stroke()}
     ry+=lh;
   });
   y+=infoH+40;
+  // photos
+  const names=["روبه‌رو","پهلو","پشت"];
   for(let i=0;i<3;i++){
-    const x=P0+i*(pw+gap),bm=await createImageBitmap(P3[i]);
-    const sc=Math.max(pw/bm.width,ph/bm.height),dw=bm.width*sc,dh=bm.height*sc;
-    g.save();g.beginPath();g.roundRect(x,y,pw,ph,18);g.clip();
-    g.drawImage(bm,x+(pw-dw)/2,y+(ph-dh)/2,dw,dh);g.restore();
-    g.fillStyle="#0A0A0A";g.textAlign="center";g.font=F(600,24);g.fillText(["روبه‌رو","پهلو","پشت"][i],x+pw/2,y+ph+42);
+    const x=P0+i*(pw+gap);
+    rr(g,x,y,pw,ph,20,"#D3E1F5");
+    try{
+      const bm=await loadBM(P3[i]);
+      const sc=Math.max(pw/bm.width,ph/bm.height),dw=bm.width*sc,dh=bm.height*sc;
+      g.save();g.beginPath();g.roundRect(x,y,pw,ph,20);g.clip();
+      g.drawImage(bm,x+(pw-dw)/2,y+(ph-dh)/2,dw,dh);g.restore();
+    }catch(e){
+      g.fillStyle="#7b8797";g.textAlign="center";g.font=F(600,24);g.fillText("عکس نامعتبر",x+pw/2,y+ph/2);
+    }
+    rr(g,x+pw/2-70,y+ph+18,140,44,22,"#0A0A0A");
+    g.fillStyle="#fff";g.textAlign="center";g.font=F(600,22);g.fillText(names[i],x+pw/2,y+ph+47);
   }
-  y+=ph+70;
-  rr(g,P0,y,W-2*P0,150,28,"#0A0A0A");
-  rr(g,W-P0-100,y+35,80,80,22,"#2563EB");
-  g.fillStyle="#fff";g.textAlign="center";g.font=F(900,26);g.fillText("OA23",W-P0-60,y+85);
-  g.textAlign="right";g.font=F(700,32);g.fillText("Omidabdiyan23",W-P0-124,y+70);
-  g.fillStyle="#9DB8F5";g.font=F(400,26);g.fillText("09020230333",W-P0-124,y+110);
-  g.direction="rtl";g.textAlign="left";g.fillStyle="#fff";g.font=F(700,24);g.fillText("FitPlan23",P0+30,y+85);
-  return await new Promise(r=>c.toBlob(r,"image/jpeg",.92));
+  y+=ph+80;
+  // footer
+  rr(g,P0,y,W-2*P0,170,28,"#0A0A0A");
+  g.textAlign="left";g.direction="ltr";g.fillStyle="#FFFFFF";g.font=F(800,30);g.fillText("Omidabdiyan23",P0+36,y+70);
+  g.fillStyle="#9DB8F5";g.font=F(400,26);g.fillText("09184643859",P0+36,y+118);
+  g.direction="rtl";
+  rr(g,W-P0-120,y+43,84,84,22,"#2563EB");
+  g.fillStyle="#fff";g.textAlign="center";g.font=F(900,26);g.fillText("OA23",W-P0-78,y+95);
+  let out=await new Promise(r=>{try{c.toBlob(r,"image/jpeg",.93)}catch(e){r(null)}});
+  if(!out){const du=c.toDataURL("image/jpeg",.93);const bin=atob(du.split(",")[1]);const arr=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)arr[k]=bin.charCodeAt(k);out=new Blob([arr],{type:"image/jpeg"})}
+  if(!out||!out.size)throw new Error("خروجی خالی شد");
+  return out;
 }
+
+function makePdf(jpg,iw,ih){
+  const enc=new TextEncoder(),parts=[],offs=[];let len=0;
+  const add=b=>{if(typeof b=="string")b=enc.encode(b);parts.push(b);len+=b.length};
+  const obj=(n,body)=>{offs[n]=len;add(n+" 0 obj\n"+body+"\nendobj\n")};
+  const W=595,H=Math.round(595*ih/iw);
+  add("%PDF-1.4\n");
+  obj(1,"<< /Type /Catalog /Pages 2 0 R >>");
+  obj(2,"<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+  obj(3,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+W+" "+H+"] /Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>");
+  const cs="q "+W+" 0 0 "+H+" 0 0 cm /Im0 Do Q";
+  obj(4,"<< /Length "+cs.length+" >>\nstream\n"+cs+"\nendstream");
+  offs[5]=len;
+  add("5 0 obj\n<< /Type /XObject /Subtype /Image /Width "+iw+" /Height "+ih+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpg.length+" >>\nstream\n");
+  add(jpg);add("\nendstream\nendobj\n");
+  const n=6,xr=len;
+  let x="xref\n0 "+n+"\n0000000000 65535 f \n";
+  for(let i=1;i<n;i++)x+=String(offs[i]).padStart(10,"0")+" 00000 n \n";
+  add(x+"trailer\n<< /Size "+n+" /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
+  return new Blob(parts,{type:"application/pdf"});
+}
+function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}
 $("sh").onclick=async()=>{
   if(!ok())return;
   if(P3.some(x=>!x)){$("err").textContent="هر سه عکس رو اضافه کن";return}
   $("err").textContent="";
-  $("ok").textContent="در حال ساخت عکس کامل…";
+  $("ok").textContent="در حال ساخت فایل…";
   try{await document.fonts.load("700 28px Vazirmatn")}catch(e){}
-  let blob;
-  try{blob=await cardImg()}catch(e){$("ok").textContent="ساخت عکس ناموفق بود، دوباره امتحان کن.";return}
+  let pdf;
+  try{
+    const jpg=await cardImg();
+    pdf=jpg;
+  }catch(e){$("ok").textContent="ساخت فایل ناموفق بود، دوباره امتحان کن.";return}
   const text=msg();
   const nm=(v("name")||"student").replace(/\s+/g,"_");
-  const file=new File([blob],"FitPlan23-"+nm+".jpg",{type:"image/jpeg"});
+  const fname="FitPlan23-"+nm+".jpg";
+  const file=new File([pdf],fname,{type:"image/jpeg"});
   try{navigator.clipboard.writeText(text)}catch(e){}
+  if(TG.token&&TG.chat){
+    $("ok").textContent="در حال ارسال به مربی…";
+    try{
+      const fd=new FormData();
+      fd.append("chat_id",TG.chat);
+      fd.append("caption",text.slice(0,1000));
+      fd.append("document",file,fname);
+      const r=await fetch("https://api.telegram.org/bot"+TG.token+"/sendDocument",{method:"POST",body:fd});
+      const j=await r.json();
+      if(j&&j.ok){$("ok").textContent="✓ عکس کامل با همه‌ی اطلاعات و عکس‌ها برای مربی ارسال شد. ممنون!";return}
+    }catch(e){}
+    download(pdf,fname);
+    $("ok").textContent="ارسال مستقیم نشد (شاید تلگرام قطع باشه و VPN لازم باشه). فایل دانلود شد؛ از واتساپ یا تلگرام برای مربی بفرست.";
+    return;
+  }
   if(navigator.canShare&&navigator.canShare({files:[file]})){
-    try{await navigator.share({files:[file],text,title:"FitPlan23"});$("ok").textContent="اگه متن کنار عکس نیومد، پیام کپی شده؛ توی چت پیست کن."}
-    catch(e){$("ok").textContent=(e&&e.name=="AbortError")?"":"ارسال نشد؛ دوباره امتحان کن یا از دکمه‌های پایین استفاده کن."}
+    try{await navigator.share({files:[file],text,title:"FitPlan23"});$("ok").textContent="فایل فرستاده شد یا لیست باز شد."}
+    catch(e){$("ok").textContent=(e&&e.name=="AbortError")?"":"ارسال نشد؛ دوباره امتحان کن."}
   }else{
-    const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);
+    download(pdf,fname);
     $("ok").textContent="عکس کامل دانلود شد. اون رو همراه متنی که کپی شده برای مربی بفرست.";
   }
+};
+$("pr").onclick=async()=>{
+  if(!ok())return;
+  if(P3.some(x=>!x)){$("err").textContent="هر سه عکس رو اضافه کن";return}
+  $("err").textContent="";
+  $("ok").textContent="در حال ساخت عکس…";
+  try{await document.fonts.load("700 28px Vazirmatn")}catch(e){}
+  let pdf;
+  try{
+    const jpg=await cardImg();
+    pdf=jpg;
+  }catch(e){$("ok").textContent="ساخت عکس ناموفق بود: "+(e&&e.message?e.message:e);return}
+  const nm=(v("name")||"student").replace(/\s+/g,"_");
+  const fname="FitPlan23-"+nm+".jpg";
+  const u=URL.createObjectURL(pdf);
+  const a=document.createElement("a");
+  a.href=u;a.download=fname;a.textContent="⬇ دانلود عکس کامل (برای ارسال یا چاپ)";
+  a.style.cssText="display:block;margin-top:10px;color:var(--acc);font-weight:700;text-decoration:none;font-size:15px";
+  $("ok").textContent="عکس آماده‌ست. روی لینک زیر بزن، بعد می‌تونی ذخیره، چاپ یا برای مربی بفرستی.";
+  $("ok").appendChild(a);
+  setTimeout(()=>URL.revokeObjectURL(u),600000);
 };
 </script>
 </body>
